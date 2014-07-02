@@ -1,0 +1,15 @@
+<%= back_url_hidden_field_tag %>
+<%= error_messages_for "sprint" %>
+
+<div class="box tabular">
+  <p><%= f.text_field :name, size: 60, required: true %></p>
+  <p><%= f.text_field :description, :size => 60 %></p>
+  <p>
+    <%= f.text_field :start_date, size: 10, required: true %>
+    <%= calendar_for "sprint_start_date" %>
+  </p>
+  <p>
+    <%= f.text_field :end_date, size: 10, required: true %>
+    <%= calendar_for "sprint_end_date" %>
+  </p>
+</div>

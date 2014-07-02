@@ -1,0 +1,8 @@
+<%= render partial: "common/scrum_editable_value",
+           locals: {project: project,
+                    title: l(:label_story_point_plural),
+                    element_id: "story_points_#{pbi.id}",
+                    value: pbi.story_points,
+                    editable: (User.current.allowed_to?(:edit_product_backlog, project) and
+                               pbi.editable?),
+                    change_element_path: change_story_points_path(pbi)} %>

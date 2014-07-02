@@ -1,0 +1,33 @@
+<%- if @project.module_enabled?(:scrum) -%>
+  <tr>
+    <th><%=l(:label_sprint)%>:</th>
+    <td><%= link_to(h(@issue.sprint.name), @issue.sprint.is_product_backlog ? project_product_backlog_index_path(@project) : @issue.sprint) unless @issue.sprint.nil? %></td>
+    <%- if @issue.is_pbi? -%>
+      <th><%=l(:field_position)%>:</th>
+      <td><%= @issue.position %></td>
+    <%- elsif @issue.is_task? -%>
+      <th><%=l(:field_pending_effort)%>:</th>
+      <td>
+        <%- if @issue.pending_effort -%>
+          <div id="pending_effort" class="scrum-dialog" title="<%= l(:field_pending_effort) %>">
+            <table align="center">
+              <tr>
+                <th><%= l(:field_effective_date) %></th>
+                <th><%= l(:field_hours) %></th>
+              </tr>
+              <%- @issue.pending_efforts.each do |pending_effort| -%>
+                <tr>
+                  <td align="center"><%= format_date(pending_effort.date) %></td>
+                  <td align="center"><%= pending_effort.effort %></td>
+                </tr>
+              <%- end -%>
+            </table>
+          </div>
+          <%= link_to l("datetime.distance_in_words.x_hours", count: @issue.pending_effort),
+                      "#",
+                      onclick: "$(\"#pending_effort\").dialog({modal: true});" %>
+        <%- end -%>
+      </td>
+    <%- end -%>
+  </tr>
+<%- end -%>

@@ -1,0 +1,14 @@
+<div class="contextual">
+  <%- if User.current.allowed_to?(:view_sprint_board, @project) -%>
+    <%= link_to(l(:label_sprint_board), project_sprints_path(@project),
+                class: "icon icon-sprint-board") %>
+  <%- end -%>
+  <%- if User.current.allowed_to?(:view_sprint_burndown, @project) -%>
+    <%= link_to(l(:label_sprint_burndown_chart), burndown_index_project_sprints_path(@project),
+                class: "icon icon-burndown") %>
+  <%- end -%>
+  <%- if User.current.allowed_to?(:view_product_backlog, @project) -%>
+    <%= link_to(l(:label_product_backlog), project_product_backlog_index_path(@project),
+                class: "icon icon-product-backlog") %>
+  <%- end -%>
+</div>

@@ -1,0 +1,66 @@
+<%- if User.current.allowed_to?(:edit_sprint_board, project) and task.editable? -%>
+	<%= javascript_tag do %>
+		var task_context_menu_function = function(event) {
+			$(".scrum-custom-menu").hide();
+			event.preventDefault();
+			var maxX = $(document).width() - $("#<%= context_menu_id %>").width() - 10;
+			var maxY = $(document).height() - $("#<%= context_menu_id %>").height() - 10;
+			var x = (event.pageX > maxX) ? maxX : event.pageX;
+			var y = (event.pageY > maxY) ? maxY : event.pageY;
+			$("#<%= context_menu_id %>").css({
+				left: x + "px",
+				top: y + "px"
+			});
+			$("#<%= context_menu_id %>").show();
+		};
+		$("#<%= task_id %>").dblclick(task_context_menu_function);
+		$("#<%= task_id %>").contextmenu(task_context_menu_function);
+		$("#<%= close_context_menu_task_id %>").click(function(event) {
+			$(".scrum-custom-menu").hide();
+		});
+		$("#<%= context_menu_assigned_to_id %>").change(function() {
+			$.ajax({
+				url: "<%= change_assigned_to_path(task) %>",
+				type: "POST",
+				data: {value: $(this).val(),
+							 pbi_status_id: "<%= pbi_status_id %>",
+							 other_pbi_status_ids: "<%= other_pbi_status_ids.join(",") %>",
+							 task_id: "<%= task_id %>"},
+				error: function() {
+					alert("<%= l(:error_changing_task_assigned_to) %>");
+				},
+				complete: function() {
+					$(".scrum-custom-menu").hide();
+					if ($.isFunction($.fn.hideOnLoad)) {
+						hideOnLoad();
+					}
+				},
+				success: function(data) {
+					$("#<%= task_id %>").replaceWith(data);
+				}
+			});
+		});
+		$("#<%= time_entry_form_id %>").submit(function() {
+			console.log("submit");
+			var values = $(this).serialize();
+			$.ajax({
+				url: $(this).attr("action"),
+				type: "POST",
+				data: values,
+				error: function() {
+					alert("<%= l(:error_creating_time_entry) %>");
+				},
+				complete: function() {
+					$(".scrum-custom-menu").hide();
+					if ($.isFunction($.fn.hideOnLoad)) {
+						hideOnLoad();
+					}
+				},
+				success: function(data) {
+					$("#<%= task_id %>").replaceWith(data);
+				}
+			});
+			return false;
+		});
+	<% end %>
+<%- end -%>

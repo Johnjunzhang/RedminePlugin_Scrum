@@ -1,0 +1,16 @@
+<table class="<%= pbi.post_it_css_class(rotate: true, scale: true) %>">
+  <tr>
+    <td class="content">
+      <%= link_to_issue(pbi, tracker: false, truncate: 150) %>
+    </td>
+  </tr>
+  <tr>
+    <td class="estimation">
+      <%- if pbi.has_story_points? -%>
+        <%= render partial: "common/scrum_story_points",
+                   locals: {project: project, pbi: pbi} %>
+        <span title="<%= l(:label_story_point_plural) %>"><%= l(:label_story_point_unit) %></span>
+      <%- end -%>
+    </td>
+  </tr>
+</table>

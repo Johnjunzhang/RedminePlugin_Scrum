@@ -1,0 +1,18 @@
+<%- if @project.module_enabled?(:scrum) -%>
+  <div class="splitcontent">
+    <div class="splitcontentleft">
+      <p>
+        <%- sprints = @issue.project.sprints_and_product_backlog
+            options = sprints.collect {|sprint| [sprint.name, sprint.id]} -%>
+        <%= form.select :sprint_id, options, :include_blank => true %>
+      </p>
+    </div>
+    <%- if @issue.is_task? -%>
+      <div class="splitcontentright">
+        <p>
+          <%= form.text_field :pending_effort, :size => 3 %>
+        </p>
+      </div>
+    <%- end -%>
+  </div>
+<%- end -%>

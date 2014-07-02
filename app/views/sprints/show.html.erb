@@ -1,0 +1,36 @@
+<%= render partial: "common/scrum_menu" %>
+
+<h2>
+  <%= l(:label_sprint_board) %>
+</h2>
+
+<%= render partial: "post_its/sprint_board/head",
+           locals: {project: @project, sprint: @sprint, path: method(:sprint_path)} %>
+
+<%- if @sprint.pbis.empty? -%>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<%- else -%>
+  <table id="sprint_board" class="sprint-board">
+    <tr class="sprint-board">
+      <%- task_statuses = IssueStatus.task_statuses
+          task_statuses.each do |status| -%>
+        <th class="sprint-board"><%= status.name %></th>
+      <%- end -%>
+    </tr>
+    <%- @sprint.pbis.each do |pbi| -%>
+      <%= render partial: "post_its/sprint_board/pbi_row",
+                 locals: {project: @project, pbi: pbi, task_statuses: task_statuses} %>
+    <%- end -%>
+  </table>
+<%- end -%>
+
+<%- if User.current.allowed_to?(:add_issues, @project) -%>
+  <div>
+    <%- Tracker.pbi_trackers.each do |tracker| -%>
+      <%= link_to tracker.name, new_pbi_path(@sprint, tracker), remote: true,
+                  method: "GET", class: "icon icon-add" %>
+    <%- end -%>
+  </div>
+<%- end -%>
+
+<%= render partial: "common/scrum_footer" %>

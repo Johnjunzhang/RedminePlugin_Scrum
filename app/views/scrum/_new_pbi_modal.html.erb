@@ -1,0 +1,59 @@
+<h3 class="title"><%= @pbi.tracker.name %></h3>
+
+<div id="messages" />
+
+<%= labelled_form_for @pbi, url: create_pbi_path(@sprint), remote: true do |f| %>
+  <%= back_url_hidden_field_tag %>
+  <%= f.hidden_field :tracker_id, :value => @pbi.tracker_id %>
+  <%= f.hidden_field :sprint_id, :value => @pbi.sprint_id %>
+  <%= error_messages_for "pbi" %>
+
+  <div class="box tabular">
+    <%- if @pbi.safe_attribute?(:subject) -%>
+      <p>
+        <%= f.text_field :subject, size: 10, maxlength: 255, required: true %>
+      </p>
+    <%- end -%>
+
+    <%- if @pbi.has_story_points? -%>
+      <p>
+        <%= f.text_field :story_points, size: 4, maxlength: 10, label: l(:label_story_point_plural) %>
+      </p>
+    <%- end -%>
+
+    <%- if @pbi.safe_attribute?(:category_id) and @pbi.project.issue_categories.any? -%>
+      <p>
+        <%= f.select :category_id,
+                     (@pbi.project.issue_categories.collect {|c| [c.name, c.id]}),
+                      include_blank: true,
+                      required: @pbi.required_attribute?(:category_id) %>
+      </p>
+    <% end %>
+
+    <%- @pbi.editable_custom_field_values.each do |value| -%>
+      <%- if value.custom_field.is_required -%>
+        <p><%= custom_field_tag_with_label :issue, value, required: true %></p>
+      <%- end -%>
+    <%- end -%>
+
+    <%- if @pbi.safe_attribute?(:description) -%>
+      <p>
+        <%= f.label_for_field :description, required: @pbi.required_attribute?(:description) %>
+        <%= content_tag :span, id: "issue_description_and_toolbar" do %>
+          <%= f.text_area :description,
+                          cols: 20,
+                          rows: 10,
+                          accesskey: accesskey(:edit),
+                          class: "wiki-edit",
+                          no_label: true %>
+        <% end %>
+      </p>
+    <%- end -%>
+  </div>
+
+  <p class="buttons">
+    <%= submit_tag l(:button_create_and_continue), name: "create_and_continue" %>
+    <%= submit_tag l(:button_create), name: "create" %>
+    <%= submit_tag l(:button_cancel), name: nil, onclick: "hideModal(this);", type: "button" %>
+  </p>
+<% end %>

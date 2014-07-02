@@ -1,0 +1,27 @@
+<%- if User.current.allowed_to?(:edit_product_backlog, project) -%>
+	<%= javascript_tag do %>
+		$(document).ready(function() {
+			$("#pbis").sortable({
+				update: function() {
+					if ($.isFunction($.fn.setupAjaxIndicator)) {
+						setupAjaxIndicator();
+					}
+					$.ajax({
+						url: "<%= sort_project_product_backlog_index_path(project) %>",
+						type: "POST",
+						data: $("#pbis").sortable("serialize"),
+						dataType: "script",
+						error: function() {
+							alert("<%= l(:error_changing_task_status) %>");
+						},
+						complete: function() {
+							if ($.isFunction($.fn.hideOnLoad)) {
+								hideOnLoad();
+							}
+						}
+					});
+				}
+			});
+		});
+	<% end %>
+<%- end -%>

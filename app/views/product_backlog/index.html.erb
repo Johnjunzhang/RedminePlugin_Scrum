@@ -1,0 +1,30 @@
+<%= render partial: "common/scrum_menu" %>
+
+<h2><%= l(:label_product_backlog) %></h2>
+
+<%- if @pbis.empty? -%>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<%- end -%>
+
+<ul id="pbis" class="pbis">
+  <%- @pbis.each do |pbi| -%>
+    <%= render partial: "post_its/product_backlog/pbi",
+               locals: {project: @project, pbi: pbi} %>
+  <%- end -%>
+</ul>
+
+<%- if User.current.allowed_to?(:add_issues, @project) -%>
+  <div>
+    <%- Tracker.pbi_trackers.each do |tracker| -%>
+      <%= link_to tracker.name, new_pbi_path(@project.product_backlog, tracker),
+                  remote: true, method: "GET", class: "icon icon-add" %>
+    <%- end -%>
+  </div>
+<%- end -%>
+
+<%- if User.current.allowed_to?(:edit_product_backlog, @project) -%>
+  <%= render partial: "post_its/product_backlog/pbis",
+             formats: [:js], locals: {project: @project} %>
+<%- end -%>
+
+<%= render partial: "common/scrum_footer" %>

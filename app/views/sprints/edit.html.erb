@@ -1,0 +1,8 @@
+<h2><%= l(:label_sprint) %></h2>
+
+<%= labelled_form_for @sprint do |f| %>
+  <%= render partial: "sprints/form", locals: {f: f} %>
+  <%= submit_tag l(:button_save) %>
+<% end %>
+
+<%= render partial: "common/scrum_footer" %>

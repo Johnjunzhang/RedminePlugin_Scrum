@@ -1,0 +1,25 @@
+<div class="box tabular">
+  <div class="contextual">
+  </div>
+  <p>
+    <label><%= l(:label_sprint) %>:</label>
+    <%- options = project.sprints.collect{|sprint| [sprint.name, path.call(sprint)]}
+        options = options_for_select(options, path.call(sprint)) -%>
+    <%= select_tag "selected_sprint_id", options,
+                   onchange: "if (this.value != '') { window.location = this.value; }" %>
+  </p>
+  <p>
+    <label><%= l(:field_start_date) %>:</label>
+    <%= format_date sprint.start_date %>
+  </p>
+  <p>
+    <label><%= l(:field_end_date) %>:</label>
+    <%= format_date sprint.end_date %>
+  </p>
+  <%- if !(sprint.description.blank?) -%>
+    <p>
+      <label><%= l(:field_description) %>:</label>
+      <%= h sprint.description %>
+    </p>
+  <%- end -%>
+</div>

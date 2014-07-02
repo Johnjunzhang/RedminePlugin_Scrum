@@ -1,0 +1,54 @@
+<%- task_id = "task_#{task.id}" -%>
+<table id="<%= task_id %>" class="<%= task.post_it_css_class(rotate: true, scale: true, draggable: true) %>">
+  <tr>
+    <td class="content" colspan="3">
+      <div class="content">
+        <%= link_to_issue(task, tracker: false, truncate: 100) %>
+        <div class="doers-reviewers-post-its-container">
+          <%- task.doers.each do |doer| -%>
+            <div class="<%= Issue.doer_post_it_css_class %>">
+              <%= link_to_user doer %>
+            </div>
+          <%- end -%>
+          <%- task.reviewers.each do |reviewer| -%>
+            <div class="<%= Issue.reviewer_post_it_css_class %>">
+              <%= link_to_user reviewer %>
+            </div>
+          <%- end -%>
+        </div>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td class="estimation">
+      <%= render_hours(task.estimated_hours, title: l(:field_estimated_hours)) %>
+    </td>
+    <td class="spent">
+      <%- if User.current.allowed_to?(:view_time_entries, project) -%>
+        <%= render_hours(task.spent_hours, title: l(:label_spent_time), ignore_zero: true,
+                         link: project_issue_time_entries_path(project, task)) %>
+      <%- end -%>
+    </td>
+    <td class="pending">
+      <%- if task.has_pending_effort? -%>
+        <%= render partial: "common/scrum_pending_effort",
+                   locals: {project: project, task: task} %>
+        <span title="<%= l(:field_pending_effort) %>">h</span>
+      <%- end -%>
+    </td>
+  </tr>
+</table>
+
+<%= render partial: "post_its/sprint_board/task",
+           formats: [:js],
+           locals: {project: project,
+                    other_pbi_status_ids: other_pbi_status_ids,
+                    task_id: task_id,
+                    task: task} %>
+
+<%= render partial: "post_its/sprint_board/task_context_menu",
+           locals: {project: project,
+                    task: task,
+                    pbi_status_id: pbi_status_id,
+                    other_pbi_status_ids: other_pbi_status_ids,
+                    task_id: task_id} %>
