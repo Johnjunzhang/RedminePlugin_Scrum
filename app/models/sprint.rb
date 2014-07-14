@@ -34,7 +34,7 @@ class Sprint < ActiveRecord::Base
   end
 
   def remained_story_points(date, story_points, closed_stories)
-    closedPoints = closed_stories.select { |pbi| pbi.closed_on.getlocal.day <= date.day }.collect { |pbi| pbi.story_points.to_f }.compact.sum
+    closedPoints = closed_stories.select { |pbi| pbi.closed_on.getlocal.to_date <= date }.collect { |pbi| pbi.story_points.to_f }.compact.sum
     story_points - closedPoints
   end
 
