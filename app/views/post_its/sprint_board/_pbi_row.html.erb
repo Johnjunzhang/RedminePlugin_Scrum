@@ -6,13 +6,6 @@
           |other| "pbi_#{pbi.id}_status_#{other.id}"
         } -%>
     <td id="<%= pbi_status_id %>" class="sprint-board">
-      <%- tasks[status.id].each do |task| -%>
-        <%= render partial: "post_its/sprint_board/task",
-                   locals: {project: project,
-                            task: task,
-                            pbi_status_id: pbi_status_id,
-                            other_pbi_status_ids: other_pbi_status_ids} %>
-      <%- end -%>
       <%- if status.name == pbi.status.name -%>
           <%= render partial: "post_its/sprint_board/pbi",
                      locals: {project: project, pbi: pbi} %>
